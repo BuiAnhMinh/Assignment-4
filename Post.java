@@ -54,8 +54,8 @@ public class Post {
         }
             System.out.println("Post validation failed.\n");
             return false; // Post validation failed
-        }
     }
+    
 
     //validate all the condition for the addPost
     private boolean isValidPost() {
@@ -191,7 +191,7 @@ public class Post {
             System.out.println("Enter Post Title:");
             postTitle = scanner.nextLine();
             post = new Post(postTitle, "", new ArrayList<>(), "", "");
-            if (post.isValidTitle(postTitle).isEmpty()) {
+            if (post.isValidTitle(postTitle)) {
                 break;
             }
             System.out.println(post.isValidTitle(postTitle));
@@ -202,7 +202,7 @@ public class Post {
             System.out.println("Enter Post Body:");
             postBody = scanner.nextLine();
             post = new Post(postTitle, postBody, new ArrayList<>(), "", "");
-            if (post.isValidBody(postBody).isEmpty()) {
+            if (post.isValidBody(postBody)) {
                 break;
             }
             System.out.println(post.isValidBody(postBody));
@@ -218,7 +218,7 @@ public class Post {
                 postTags.add(scanner.nextLine());
             }
             post = new Post(postTitle, postBody, postTags, "", "");
-            if (post.isValidTags(postTags).isEmpty()) {
+            if (post.isValidTags(postTags)) {
                 break;
             }
             System.out.println(post.isValidTags(postTags));
@@ -229,7 +229,7 @@ public class Post {
             System.out.println("Enter Post Type (Very Difficult, Difficult, Easy):");
             postType = scanner.nextLine();
             post = new Post(postTitle, postBody, postTags, postType, "");
-            if (post.isValidType(postType, postBody, postTags).isEmpty()) {
+            if (post.isValidType(postType, postBody, postTags)) {
                 break;
             }
             System.out.println(post.isValidType(postType, postBody, postTags));
@@ -240,7 +240,7 @@ public class Post {
             System.out.println("Enter Post Emergency (Immediately Needed, Highly Needed, Ordinary):");
             postEmergency = scanner.nextLine();
             post = new Post(postTitle, postBody, postTags, postType, postEmergency);
-            if (post.isValidEmergency(postEmergency, postType).isEmpty()) {
+            if (post.isValidEmergency(postEmergency, postType)) {
                 break;
             }
             System.out.println(post.isValidEmergency(postEmergency, postType));
