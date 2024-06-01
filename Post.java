@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import javax.swing.text.StyledEditorKit;
+
 public class Post {
     private int postID;
     private String postTitle;
@@ -32,8 +34,7 @@ public class Post {
     }
 
     public boolean addPost() {
-        String validationMessage = isValidPost();
-        if (validationMessage.isEmpty()) {
+        if (isValidPost()) {
             // Write the post information to a TXT file
             try (FileWriter writer = new FileWriter("post.txt", true)) {
                 writer.write("Post ID: " + postID + "\n");
@@ -51,92 +52,88 @@ public class Post {
 
             return true;
         }
-        return false; // Post validation failed
+            System.out.println("Post validation failed.\n");
+            return false; // Post validation failed
+        }
     }
 
-
-    private String isValidPost() {
-        StringBuilder validationMessage = new StringBuilder();
-        validationMessage.append(isValidTitle(postTitle));
-        validationMessage.append(isValidBody(postBody));
-        validationMessage.append(isValidTags(postTags));
-        validationMessage.append(isValidType(postType, postBody, postTags));
-        validationMessage.append(isValidEmergency(postEmergency, postType));
-        return validationMessage.toString();
-    //     return isValidTitle(postTitle) && isValidBody(postBody) && isValidTags(postTags) && isValidType(postType, postBody, postTags) && isValidEmergency(postEmergency, postType);
+    //validate all the condition for the addPost
+    private boolean isValidPost() {
+        return isValidTitle(postTitle) && isValidBody(postBody) && isValidTags(postTags) && isValidType(postType, postBody, postTags) && isValidEmergency(postEmergency, postType);
     }
 
     // Condition 1: Validate post title
-    private String isValidTitle(String title){
+    private boolean isValidTitle(String title){
         if(title.length() < 10 || title.length() > 250){
-            System.out.println("Post title length validation failed.");
-            // return false;
+            System.out.println("Post title length validation failed.\n");
+            return false;
         }
         for(int i = 0; i < 5; i++){
             if (!Character.isLetter(postTitle.charAt(i)) && !Character.isWhitespace(postTitle.charAt(i))) {
-                System.out.println("Post title character validation failed.");
-                // return false;
+                System.out.println("Post title character validation failed.\n");
+                return false;
             }
         }
-        return "";
+        return true;
     }
 
     //Condition 2: validate post body
-    private String isValidBody(String body){
+    private boolean isValidBody(String body){
         if (body.length() <= 250){
-            return "Post body length validation failed.";
+            System.out.println("Post body length validation failed.\n");
+            return false;
         }
-        return "";
+        return true;
     }
 
     // Condition 3: Validate post tags
-    private String isValidTags(List<String>tags){
+    private boolean isValidTags(List<String>tags){
         if(tags.size() < 2 || tags.size() > 5){
-            System.out.println("Post tags count validation failed.");
-            // return false;
+            System.out.println("Post tags count validation failed.\n");
+            return false;
         }
         for(String tag:tags){
             if(tag.length() < 2 || tag.length() > 10 || !tag.equals(tag.toLowerCase())) {
                 System.out.println("Post tag validation failed: " + tag);
-                // return false;
+                return false;
             } 
         }
-        return "";
+        return true;
     }
 
      // Condition 4: Validate post type and its constraints
-    private String isValidType(String type, String body, List<String>tags){
+    private boolean isValidType(String type, String body, List<String>tags){
         if(!Arrays.asList(postTypes).contains(type)){
-            return "Invalid post type. Please enter \"Easy\", \"Difficult\" and \"Very Difficult\": " ;
-            // return false;
+            System.out.println("Invalid post type. Please enter \"Easy\", \"Difficult\" and \"Very Difficult\": ");
+            return false;
         }
 
         if((type.equals("Very Difficult")) || type.equals("Diffucult") && body.length() < 300){
-            return "Post body length is too short for type " + type + ". ";
+            System.out.println("Post body length is too short for type " + type + ". ");
+            return false;
         }
-            // return false;
         if(type.equals("easy") && tags.size() > 3){
-            return "Too many tags for type Easy. ";
-            // return false; 
+            System.out.println("Too many tags for type Easy. ");
+            return false; 
         }
-        return "";
+        return true;
     }
 
     // Condition 5: Validate post emergency and its constraints
-    private String isValidEmergency(String emergency, String type){
+    private boolean isValidEmergency(String emergency, String type){
         if(!Arrays.asList(postEmergencyTypes).contains(emergency)){
-            return "Invalid post urgency. Please enter \"Immediately Needed\", \"Highly Needed\" and \"Ordinary\": " ;
-            // return false; 
+            System.out.println("Invalid post urgency. Please enter \"Immediately Needed\", \"Highly Needed\" and \"Ordinary\": \n"); ;
+            return false; 
         }
         if(type.equals("Easy") && ((emergency.equals("Immediately Needed") || emergency.equals("Highly Needed")))){
-            return "Easy post emergency validation failed.";
-            // return false;
+            System.out.println("Easy post emergency validation failed.\n");
+            return false;
         }
         if((type.equals("Very Difficult") || type.equals("Difficult")) && emergency.equals("Ordianary")){
-            return "Invalid emergency level for type " + type + ". ";
-            // return false;
+            System.out.println("Invalid emergency level for type " + type + ". \n");
+            return false;
         }
-        return ""; 
+        return true; 
     }
     //  addComment function 
     public boolean addComment(String commentText) {
