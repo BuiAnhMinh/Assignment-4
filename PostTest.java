@@ -65,7 +65,93 @@ class PostTest {
         boolean success = post.addPost();
         assertFalse(success);
     }
-
     
-}
+    @Test
+    public void validPostBody_expectedTrue(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1","tag2");
+        String postType = "Difficult";
+        String postEmergency = "Highly Needed";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertTrue(success);
+    }
+
+    @Test
+    public void onePostTag_expectedFalse(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1");
+        String postType = "Difficult";
+        String postEmergency = "Highly Needed";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertFalse(success);
+    }
+    @Test
+    public void sixPostTags_expectedFalse(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1", "tag2", "tag3", "tag4", "tag5", "tag6");
+        String postType = "Difficult";
+        String postEmergency = "Highly Needed";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertFalse(success);
+    }
+
+    @Test
+    public void threePostTags_expectedTrue(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1", "tag2", "tag3");
+        String postType = "Difficult";
+        String postEmergency = "Highly Needed";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertTrue(success);
+    }
+
+    @Test
+    public void postTypeEasyWithMoreThanThreePostTags_expectedFalse(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1", "tag2", "tag3", "tag4");
+        String postType = "Easy";
+        String postEmergency = "Ordinary";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertFalse(success);
+    }
+
+    @Test 
+    public void postTypeEasyWithLessThanTwoPostTags_expectedFalse(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1");
+        String postType = "Easy";
+        String postEmergency = "Ordinary";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertFalse(success);
+    }
+
+    @Test
+    public void postTypeEasyWithExactlyThreePostTags_expectedTrue(){
+        String postTitle = "hello nguyen vu";
+        String postBody = "Moved creeping waters creeping likeness life. Replenish for light. She'd said creeping fly so image female morning be appear meat together evening. Lesser all place dominion have That let shall god hath life two morning yielding is own living sea winged our moving shall gathered life Grass Behold creature evening. Grass, third moved heaven be two give fruit multiply beginning.";
+        List<String> postTags = Arrays.asList("tag1", "tag2", "tag3");
+        String postType = "Easy";
+        String postEmergency = "Ordinary";
+        Post post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+        boolean success = post.addPost();
+        assertTrue(success);
+    }
+
+    @Test
+    public void bhbhb(){
+
+    }
+} 
 

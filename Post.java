@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -112,7 +114,7 @@ public class Post {
             System.out.println("Post body length is too short for type " + type + ". ");
             return false;
         }
-        if(type.equals("easy") && tags.size() > 3){
+        if(type.equals("Easy") && tags.size() > 3){
             System.out.println("Too many tags for type Easy. ");
             return false; 
         }
@@ -160,24 +162,43 @@ public class Post {
         }
     }
 
-    private String validateComment(String commentText){
+    //Check existing posts before entering comment
+    private boolean checkExistingPost(String input){
+        try (BufferedReader reader = new BufferedReader(new FileReader("post.txt"))){
+            String line;
+            while((line = reader.readLine()) != null){
+                if(line.startsWith("Post ID: ") && line.substring(9).trim().equals(input)){
+                    return true;
+                }
+                if(line.startsWith("Title: ") && line.substring(7).trim().equalsIgnoreCase(input)){
+                    return true; 
+                }
+            }
+        }catch(IOException e){
+            e.printStackTrace();;
+        }
+
+        return false; 
+    }
+
+    private boolean validateComment(String commentText){
         // Condition 1: Validate comment text
         String[] words = commentText.split("\\s+");
         if (words.length < 4 || words.length > 10 || !Character.isUpperCase(words[0].charAt(0))) {
-            return "Comment text validation failed.";
-            // return false;
+            System.out.println("Comment text validation failed."); ;
+            return false;
         }
 
         // Condition 2: Validate the number of comments
         if ((postType.equals("Easy") || postEmergency.equals("Ordinary")) && postComments.size() >= 3) {
-            return"Easy/Ordinary post comments count validation failed.";
-            // return false;
+            System.out.println("Easy/Ordinary post comments count validation failed.");
+            return false;
         }
         if (postComments.size() >= 5) {
-            return "Post comments count validation failed.";
-            // return false;
+            System.out.println("Post comments count validation failed.");
+            return false;
         }
-        return "";
+        return true;
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
