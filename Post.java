@@ -124,23 +124,29 @@ public class Post {
     // Condition 5: Validate post emergency and its constraints
     private boolean isValidEmergency(String emergency, String type){
         if(!Arrays.asList(postEmergencyTypes).contains(emergency)){
-            System.out.println("Invalid post urgency. Please enter \"Immediately Needed\", \"Highly Needed\" and \"Ordinary\": \n"); ;
+            System.out.println("Invalid post urgency. Please enter \"Immediately Needed\", \"Highly Needed\" and \"Ordinary\": "); ;
             return false; 
         }
         if(type.equals("Easy") && ((emergency.equals("Immediately Needed") || emergency.equals("Highly Needed")))){
-            System.out.println("Easy post emergency validation failed.\n");
+            System.out.println("Easy post emergency validation failed.");
             return false;
         }
         if((type.equals("Very Difficult") || type.equals("Difficult")) && emergency.equals("Ordianary")){
-            System.out.println("Invalid emergency level for type " + type + ". \n");
+            System.out.println("Invalid emergency level for type " + type + ".");
             return false;
         }
         return true; 
     }
+
+
     //  addComment function 
-    public boolean addComment(String commentText) {
-        String validationMessage = validateComment(commentText);
-        if (validationMessage.isEmpty()) {
+    public boolean addComment(String postIDOrTitle, String commentText) {
+        if(!checkExistingPost(postIDOrTitle)){
+            System.out.println("Invalid postID or title\n");
+            return false;
+        }
+
+        if (validateComment(commentText)) {
             postComments.add(commentText);
 
             // Write the comments information to a TXT file
@@ -157,7 +163,7 @@ public class Post {
             }
             return true;
         } else {
-            System.out.println("Failed to add comment. " + validationMessage);
+            System.out.println("Failed to add comment. Invalid comment text\n");
             return false;
         }
     }
@@ -277,12 +283,14 @@ public class Post {
         System.out.println("Do you want to add a comment? (yes/no)");
         String addComment = scanner.nextLine();
         while (addComment.equalsIgnoreCase("yes")) {
+            System.out.println("Enter Post ID or Title you want to comment on: ");
+            String postIDOrTitle =  scanner.nextLine();
             String commentText;
             boolean commentSuccess;
             do {
                 System.out.println("Enter Comment:");
                 commentText = scanner.nextLine();
-                commentSuccess = post.addComment(commentText);
+                commentSuccess = post.addComment(postIDOrTitle, commentText);
                 if(!commentSuccess && (postType.equals("Easy") || postEmergency.equals("Ordinary")) && post.postComments.size() >= 3){
                     System.out.println("Max comments reached for Easy/Ordinary post. Exiting...");
                     scanner.close();
