@@ -247,7 +247,7 @@ public class Post {
         int postID; 
         String postTitle, postBody, postType, postEmergency;
         List<String> postTags = new ArrayList<>();
-        Post post = null;
+        Post post = new Post(0, null, null, null, null, null);
 
         //validate post ID
         while(true){
@@ -257,7 +257,7 @@ public class Post {
             if(post.isValidPostID(postID)){
                 break;
             }
-            System.out.println(post.isValidPostID(postID));
+            System.out.println("Invalid Post ID. Please enter a valid ID.");
         }
 
 
@@ -269,7 +269,7 @@ public class Post {
             if (post.isValidTitle(postTitle)) {
                 break;
             }
-            System.out.println(post.isValidTitle(postTitle));
+            System.out.println("Invalid Post Title. Please enter a valid title.");
         }
 
         // Validate post body
@@ -280,7 +280,7 @@ public class Post {
             if (post.isValidBody(postBody)) {
                 break;
             }
-            System.out.println(post.isValidBody(postBody));
+            System.out.println("Invalid post Body. Please enter a valid body.");
         }
 
         // Validate post tags
@@ -296,7 +296,7 @@ public class Post {
             if (post.isValidTags(postTags)) {
                 break;
             }
-            System.out.println(post.isValidTags(postTags));
+            System.out.println("Invalid post tags. Please enter valid tags.");
         }
 
         // Validate post type
@@ -307,7 +307,7 @@ public class Post {
             if (post.isValidType(postType, postBody, postTags)) {
                 break;
             }
-            System.out.println(post.isValidType(postType, postBody, postTags));
+            System.out.println("Invalid post Type. Please enter a valid Type.");
         }
 
         // Validate post emergency
@@ -318,7 +318,7 @@ public class Post {
             if (post.isValidEmergency(postEmergency, postType)) {
                 break;
             }
-            System.out.println(post.isValidEmergency(postEmergency, postType));
+            System.out.println("Invalid post Urgency. Please enter a valid Urgency.");
         }
 
         post = new Post(postID, postTitle, postBody, postTags, postType, postEmergency);
