@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import javax.swing.text.StyledEditorKit;
+
 
 public class Post {
     private int postID;
@@ -20,19 +20,25 @@ public class Post {
 
     private String postType;
     private String postEmergency;
-    private static int idCounter = 1; //Simple counter for postID
+    // private static int idCounter = 1; //Simple counter for postID
 
 
-    public Post(String postTitle, String postBody, List<String> postTags, String postType, String postEmergency) {
-
-        this.postID = idCounter++;
+    public Post(int postID, String postTitle, String postBody, List<String> postTags, String postType, String postEmergency) {
+        this.postID = postID;
         this.postTitle = postTitle;
         this.postBody = postBody;
         this.postTags = postTags;
         this.postType = postType;
-        this.postEmergency = postEmergency;
+        this.postEmergency = postEmergency;   
+    }
 
-        
+    //fixing the postID problem in test cases
+    // public static void resetIDCounter(){
+    //     idCounter = 1;
+    // }
+
+    public int getPostID(){
+        return postID;
     }
 
     public boolean addPost() {
@@ -58,10 +64,38 @@ public class Post {
             return false; // Post validation failed
     }
     
+    //checking for existing postID
+    private boolean isValidPostID(int postID){
+        try (BufferedReader reader = new BufferedReader(new FileReader("post.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("Post ID: ")) {
+                    String postIdStr = line.substring(9).trim();
+                    // Convert postIdStr to integer manually
+                    int existingPostID = 0;
+                    for (int i = 0; i < postIdStr.length(); i++) {
+                        char c = postIdStr.charAt(i);
+                        if (c < '0' || c > '9') {
+                            throw new NumberFormatException("Invalid post ID format");
+                        }
+                        existingPostID = existingPostID * 10 + (c - '0');
+                    }
+                    if (existingPostID == postID) {
+                        return false;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
     //validate all the condition for the addPost
     private boolean isValidPost() {
-        return isValidTitle(postTitle) && isValidBody(postBody) && isValidTags(postTags) && isValidType(postType, postBody, postTags) && isValidEmergency(postEmergency, postType);
+        return isValidPostID(postID) && isValidTitle(postTitle) && isValidBody(postBody) && isValidTags(postTags) && isValidType(postType, postBody, postTags) && isValidEmergency(postEmergency, postType);
     }
 
     // Condition 1: Validate post title
@@ -207,17 +241,31 @@ public class Post {
         return true;
     }
     public static void main(String[] args) {
+        // resetIDCounter(); sometimes use to make sure the postID counter return to 1
         Scanner scanner = new Scanner(System.in);
 
+        int postID; 
         String postTitle, postBody, postType, postEmergency;
         List<String> postTags = new ArrayList<>();
         Post post = null;
+
+        //validate post ID
+        while(true){
+            System.out.println("Enter Post ID, make sure it is unique: ");
+            postID = scanner.nextInt();
+            scanner.nextLine();
+            if(post.isValidPostID(postID)){
+                break;
+            }
+            System.out.println(post.isValidPostID(postID));
+        }
+
 
         // Validate post title
         while (true) {
             System.out.println("Enter Post Title:");
             postTitle = scanner.nextLine();
-            post = new Post(postTitle, "", new ArrayList<>(), "", "");
+            // post = new Post(postTitle, "", new ArrayList<>(), "", "");
             if (post.isValidTitle(postTitle)) {
                 break;
             }
@@ -228,7 +276,7 @@ public class Post {
         while (true) {
             System.out.println("Enter Post Body:");
             postBody = scanner.nextLine();
-            post = new Post(postTitle, postBody, new ArrayList<>(), "", "");
+            // post = new Post(postID, postTitle, postBody, new ArrayList<>(), "", "");
             if (post.isValidBody(postBody)) {
                 break;
             }
@@ -244,7 +292,7 @@ public class Post {
                 System.out.println("Enter tag " + (i + 1) + ":");
                 postTags.add(scanner.nextLine());
             }
-            post = new Post(postTitle, postBody, postTags, "", "");
+            // post = new Post(postTitle, postBody, postTags, "", "");
             if (post.isValidTags(postTags)) {
                 break;
             }
@@ -255,7 +303,7 @@ public class Post {
         while (true) {
             System.out.println("Enter Post Type (Very Difficult, Difficult, Easy):");
             postType = scanner.nextLine();
-            post = new Post(postTitle, postBody, postTags, postType, "");
+            // post = new Post(postTitle, postBody, postTags, postType, "");
             if (post.isValidType(postType, postBody, postTags)) {
                 break;
             }
@@ -266,13 +314,14 @@ public class Post {
         while (true) {
             System.out.println("Enter Post Emergency (Immediately Needed, Highly Needed, Ordinary):");
             postEmergency = scanner.nextLine();
-            post = new Post(postTitle, postBody, postTags, postType, postEmergency);
+            // post = new Post(postTitle, postBody, postTags, postType, postEmergency);
             if (post.isValidEmergency(postEmergency, postType)) {
                 break;
             }
             System.out.println(post.isValidEmergency(postEmergency, postType));
         }
 
+        post = new Post(postID, postTitle, postBody, postTags, postType, postEmergency);
         boolean success = post.addPost();
         if (success) {
             System.out.println("Post added successfully!");
