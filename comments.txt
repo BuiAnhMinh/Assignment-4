@@ -1,28 +1,3 @@
 Post ID: 1
-Comment: This is another valid comment.
-
-Post ID: 1
-Comment: This is the first comment.
-
-Post ID: 1
-Comment: This is the first comment.
-Comment: This is the second comment.
-
-Post ID: 1
-Comment: This is the first comment.
-Comment: This is the second comment.
-Comment: This is the third comment.
-
-Post ID: 1
-Comment: This is the first comment.
-Comment: This is the second comment.
-Comment: This is the third comment.
-Comment: This is the fourth comment.
-
-Post ID: 1
-Comment: This is the first comment.
-Comment: This is the second comment.
-Comment: This is the third comment.
-Comment: This is the fourth comment.
-Comment: This is the fifth comment.
+Comment: This is a valid comment
 

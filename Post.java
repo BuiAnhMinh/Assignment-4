@@ -173,6 +173,14 @@ public class Post {
         return true; 
     }
 
+    //checking for duplicate comment
+    private boolean isDuplicateComment(String commentText) {
+        if (postComments.contains(commentText)) {
+            System.out.println("Duplicate comment detected.");
+            return true;
+        }
+        return false;
+    }
 
     //  addComment function 
     public boolean addComment(String postIDOrTitle, String commentText) {
@@ -181,7 +189,7 @@ public class Post {
             return false;
         }
 
-        if (validateComment(commentText)) {
+        if (validateComment(commentText) & !isDuplicateComment(commentText)) {
             postComments.add(commentText);
             bufferComments.add(commentText);
             // System.out.println("Comment added to buffer"); //debugging
