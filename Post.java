@@ -17,6 +17,7 @@ public class Post {
     private String[] postTypes = {"Very Difficult", "Difficult", "Easy"};
     private String[] postEmergencyTypes = {"Immediately Needed", "Highly Needed", "Ordinary"};
     private ArrayList<String> postComments = new ArrayList<>();
+    private ArrayList<String> bufferComments = new ArrayList<>(); // an array of comments for saving purpose only
 
     private String postType;
     private String postEmergency;
@@ -172,6 +173,14 @@ public class Post {
         return true; 
     }
 
+    //checking for duplicate comment
+    private boolean isDuplicateComment(String commentText) {
+        if (postComments.contains(commentText)) {
+            System.out.println("Duplicate comment detected.");
+            return true;
+        }
+        return false;
+    }
 
     //  addComment function 
     public boolean addComment(String postIDOrTitle, String commentText) {
@@ -180,25 +189,28 @@ public class Post {
             return false;
         }
 
-        if (validateComment(commentText)) {
+        if (validateComment(commentText) & !isDuplicateComment(commentText)) {
             postComments.add(commentText);
-
-            // Write the comments information to a TXT file
-            try (FileWriter writer = new FileWriter("comments.txt", true)) {
-                writer.write("Post ID: " + postID + "\n");
-                for (String comment : postComments) {
-                    writer.write("Comment: " + comment + "\n");
-                }
-                writer.write("\n");
-                System.out.println("Comment written to comments.txt");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false; // Unable to write to file
-            }
+            bufferComments.add(commentText);
+            // System.out.println("Comment added to buffer"); //debugging
             return true;
-        } else {
-            System.out.println("Failed to add comment. Invalid comment text\n");
-            return false;
+        }
+        else{
+            return false; 
+        }
+    }
+    
+    public void saveCommentsToFile(){
+        try (FileWriter writer = new FileWriter("comments.txt", true)) {
+            writer.write("Post ID: " + postID + "\n");
+            for (String comment : bufferComments) {
+                writer.write("Comment: " + comment + "\n");
+            }
+            writer.write("\n");
+            System.out.println("Comment written to comments.txt");
+            bufferComments.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -247,7 +259,7 @@ public class Post {
         int postID; 
         String postTitle, postBody, postType, postEmergency;
         List<String> postTags = new ArrayList<>();
-        Post post = null;
+        Post post = new Post(0, null, null, null, null, null);
 
         //validate post ID
         while(true){
@@ -257,7 +269,7 @@ public class Post {
             if(post.isValidPostID(postID)){
                 break;
             }
-            System.out.println(post.isValidPostID(postID));
+            System.out.println("Invalid Post ID. Please enter a valid ID.");
         }
 
 
@@ -269,7 +281,7 @@ public class Post {
             if (post.isValidTitle(postTitle)) {
                 break;
             }
-            System.out.println(post.isValidTitle(postTitle));
+            System.out.println("Invalid Post Title. Please enter a valid title.");
         }
 
         // Validate post body
@@ -280,7 +292,7 @@ public class Post {
             if (post.isValidBody(postBody)) {
                 break;
             }
-            System.out.println(post.isValidBody(postBody));
+            System.out.println("Invalid post Body. Please enter a valid body.");
         }
 
         // Validate post tags
@@ -296,7 +308,7 @@ public class Post {
             if (post.isValidTags(postTags)) {
                 break;
             }
-            System.out.println(post.isValidTags(postTags));
+            System.out.println("Invalid post tags. Please enter valid tags.");
         }
 
         // Validate post type
@@ -307,7 +319,7 @@ public class Post {
             if (post.isValidType(postType, postBody, postTags)) {
                 break;
             }
-            System.out.println(post.isValidType(postType, postBody, postTags));
+            System.out.println("Invalid post Type. Please enter a valid Type.");
         }
 
         // Validate post emergency
@@ -318,7 +330,7 @@ public class Post {
             if (post.isValidEmergency(postEmergency, postType)) {
                 break;
             }
-            System.out.println(post.isValidEmergency(postEmergency, postType));
+            System.out.println("Invalid post Urgency. Please enter a valid Urgency.");
         }
 
         post = new Post(postID, postTitle, postBody, postTags, postType, postEmergency);
@@ -342,11 +354,13 @@ public class Post {
                 commentSuccess = post.addComment(postIDOrTitle, commentText);
                 if(!commentSuccess && (postType.equals("Easy") || postEmergency.equals("Ordinary")) && post.postComments.size() >= 3){
                     System.out.println("Max comments reached for Easy/Ordinary post. Exiting...");
+                    post.saveCommentsToFile(); // save before closing
                     scanner.close();
                     return;
                 }
                 if(post.postComments.size() > 5){
                     System.err.println("Max comments reached for " + post.postTitle + ". Exiting...");
+                    post.saveCommentsToFile(); // save before closing
                     scanner.close();
                     return;
                 }
