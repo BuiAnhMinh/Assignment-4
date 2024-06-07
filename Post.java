@@ -17,6 +17,7 @@ public class Post {
     private String[] postTypes = {"Very Difficult", "Difficult", "Easy"};
     private String[] postEmergencyTypes = {"Immediately Needed", "Highly Needed", "Ordinary"};
     private ArrayList<String> postComments = new ArrayList<>();
+    private ArrayList<String> bufferComments = new ArrayList<>(); // an array of comments for saving purpose only
 
     private String postType;
     private String postEmergency;
@@ -182,23 +183,26 @@ public class Post {
 
         if (validateComment(commentText)) {
             postComments.add(commentText);
-
-            // Write the comments information to a TXT file
-            try (FileWriter writer = new FileWriter("comments.txt", true)) {
-                writer.write("Post ID: " + postID + "\n");
-                for (String comment : postComments) {
-                    writer.write("Comment: " + comment + "\n");
-                }
-                writer.write("\n");
-                System.out.println("Comment written to comments.txt");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return false; // Unable to write to file
-            }
+            bufferComments.add(commentText);
+            // System.out.println("Comment added to buffer"); //debugging
             return true;
-        } else {
-            System.out.println("Failed to add comment. Invalid comment text\n");
-            return false;
+        }
+        else{
+            return false; 
+        }
+    }
+    
+    public void saveCommentsToFile(){
+        try (FileWriter writer = new FileWriter("comments.txt", true)) {
+            writer.write("Post ID: " + postID + "\n");
+            for (String comment : bufferComments) {
+                writer.write("Comment: " + comment + "\n");
+            }
+            writer.write("\n");
+            System.out.println("Comment written to comments.txt");
+            bufferComments.clear();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -342,11 +346,13 @@ public class Post {
                 commentSuccess = post.addComment(postIDOrTitle, commentText);
                 if(!commentSuccess && (postType.equals("Easy") || postEmergency.equals("Ordinary")) && post.postComments.size() >= 3){
                     System.out.println("Max comments reached for Easy/Ordinary post. Exiting...");
+                    post.saveCommentsToFile(); // save before closing
                     scanner.close();
                     return;
                 }
                 if(post.postComments.size() > 5){
                     System.err.println("Max comments reached for " + post.postTitle + ". Exiting...");
+                    post.saveCommentsToFile(); // save before closing
                     scanner.close();
                     return;
                 }
